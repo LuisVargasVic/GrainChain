@@ -14,7 +14,7 @@ class PreferenceCacheImpl @Inject constructor(
     private val preferenceKeyUsername = "pref.username"
 
 
-    override fun setUsername(username: String) {
+    override fun setUsername(username: String?) {
         sharedPreferences
             .edit()
             .putString(preferenceKeyUsername, username)

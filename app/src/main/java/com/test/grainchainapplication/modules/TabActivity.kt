@@ -44,6 +44,9 @@ class TabActivity : AppCompatActivity(), HasSupportFragmentInjector {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+        mSectionsPagerAdapter!!.addFragment(SearchFragment.newInstance(), "SEARCH")
+        mSectionsPagerAdapter!!.addFragment(AddFragment.newInstance(), "ADD")
+
         listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.ter_stegen), "Marc André", "ter Stegen", "25", "111111111"))
         listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.semedo), "Nelson", "Semedo", "23", "222222222"))
         listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.pique), "Gerard", "Pique", "32", "3333333333"))
@@ -62,7 +65,6 @@ class TabActivity : AppCompatActivity(), HasSupportFragmentInjector {
         binding.container.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-
                 if (position == 0) {
                     val fragment = binding.container.adapter!!.instantiateItem(binding.container, position) as SearchFragment
                     fragment.onResume()
@@ -74,6 +76,8 @@ class TabActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 }
             }
         })
+
+        binding.tabs.setupWithViewPager(binding.container)
 
     }
 
@@ -87,20 +91,25 @@ class TabActivity : AppCompatActivity(), HasSupportFragmentInjector {
      */
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
+        private val mFragments = arrayListOf<Fragment>()
+        private val mFragmentTitles = arrayListOf<String>()
+
         override fun getItem(position: Int): Fragment {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            if (position == 0) {
-                return SearchFragment.newInstance()
-            } else if (position == 1) {
-                return AddFragment.newInstance()
-            }
-            return Fragment()
+            return mFragments[position]
+        }
+
+        fun addFragment(fragment: Fragment, title: String) {
+            mFragments.add(fragment)
+            mFragmentTitles.add(title)
         }
 
         override fun getCount(): Int {
             // Show 2 total pages.
-            return 2
+            return mFragments.size
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            return mFragmentTitles[position]
         }
     }
 

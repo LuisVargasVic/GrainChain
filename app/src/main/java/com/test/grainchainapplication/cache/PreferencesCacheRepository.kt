@@ -7,5 +7,5 @@ interface PreferencesCacheRepository {
 
     // Session preferences
     fun getUsername(): String?
-    fun setUsername(username: String)
+    fun setUsername(username: String?)
 }

@@ -34,14 +34,18 @@ class LoginPresenter @Inject constructor(
 
                 if (response?.body() != null ) {
                     if (response.code() == 200) {
-                        preferences.setUsername(response.body()!!.body.auth.user.name)
-                        view.onLoginSuccess()
+                        preferences.setUsername(response.body()?.body?.auth?.user?.name)
+                        if (response.body()?.body?.auth?.user?.name != null) {
+                            view.onLoginSuccess()
+                        } else {
+                            view.showMessage("Unkown credentials")
+                        }
                     } else {
-                        view.showMessage("Error")
+                        view.showMessage("Unkown credentials")
                     }
 
                 } else {
-                    view.showMessage("Error")
+                    view.showMessage("Unkown credentials")
                 }
             }
 
