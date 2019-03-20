@@ -45,8 +45,6 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
     }
 
     private fun performLogin(){
-        mPresenter.login(LoginRequest("harvx_190878", "supersecretpassword"), networkApiService)
-        return
         if (isValidForm()) {
             mPresenter.login(LoginRequest(
                 binding.activityLoginEtUser.text.toString(),
