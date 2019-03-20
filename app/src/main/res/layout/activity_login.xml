@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            tools:context=".modules.login.LoginActivity"
+            tools:ignore="LabelFor">
+
+        <ImageView
+                android:id="@+id/activity_login_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                tools:ignore="ContentDescription" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:gravity="center"
+                tools:ignore="LabelFor">
+
+            <ImageView
+                    android:id="@+id/activity_login_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:src="@drawable/logotipo"
+                    tools:ignore="ContentDescription" />
+
+
+            <EditText
+                    android:id="@+id/activity_login_et_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:hint="@string/activity_login_user"
+                    android:textAlignment="center"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:lines="1"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:autofillHints=""
+                    tools:targetApi="o" />
+
+
+            <EditText
+                    android:id="@+id/activity_login_et_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:hint="@string/activity_login_password"
+                    android:textAlignment="center"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:lines="1"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:autofillHints=""
+                    tools:targetApi="o" />
+
+            <Button
+                    android:id="@+id/activity_login_bt"
+                    android:layout_width="250dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center"
+                    android:text="Ingresar"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>
