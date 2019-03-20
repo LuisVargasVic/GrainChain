@@ -23,11 +23,10 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
 
     @Inject
     lateinit var mPresenter: LoginContract.Presenter
-
     private lateinit var navigator: Navigator
     private lateinit var progressDialog: AlertDialog
     private lateinit var networkApiService: NetworkApiService
-    private lateinit var mBinding: ActivityLoginBinding
+    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -35,34 +34,34 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
         networkApiService = NetworkApiServiceFactory(this).makeApiService(BuildConfig.SERVER_URL)
         progressDialog = setUpProgressDialog()
         navigator = NavigatorImpl(this)
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         setUpUI()
     }
 
     private fun setUpUI(){
-        mBinding.activityLoginBt.setOnClickListener {
+        binding.activityLoginBt.setOnClickListener {
             performLogin()
         }
     }
 
     private fun performLogin(){
-        /*mPresenter.login(LoginRequest("harvx_190878", "supersecretpassword"), networkApiService)
-        return*/
+        mPresenter.login(LoginRequest("harvx_190878", "supersecretpassword"), networkApiService)
+        return
         if (isValidForm()) {
             mPresenter.login(LoginRequest(
-                mBinding.activityLoginEtUser.text.toString(),
-                mBinding.activityLoginEtPassword.text.toString()
+                binding.activityLoginEtUser.text.toString(),
+                binding.activityLoginEtPassword.text.toString()
             ), networkApiService)
         }
     }
 
     private fun isValidForm(): Boolean {
         return when {
-            mBinding.activityLoginEtUser.text.toString() == "" -> {
+            binding.activityLoginEtUser.text.toString() == "" -> {
                 showMessage("Username is required")
                 false
             }
-            mBinding.activityLoginEtPassword.text.toString() == "" -> {
+            binding.activityLoginEtPassword.text.toString() == "" -> {
                 showMessage("Password is required")
                 false
             }

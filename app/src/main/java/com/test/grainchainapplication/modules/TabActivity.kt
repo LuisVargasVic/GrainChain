@@ -1,17 +1,25 @@
 package com.test.grainchainapplication.modules
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.view.Window
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.google.android.material.snackbar.Snackbar
+import androidx.viewpager.widget.ViewPager
 import com.test.grainchainapplication.R
-import kotlinx.android.synthetic.main.activity_tab.*
+import com.test.grainchainapplication.databinding.ActivityTabBinding
+import com.test.grainchainapplication.models.Contact
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
-class TabActivity : AppCompatActivity() {
+class TabActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     /**
      * The [androidx.viewpager.widget.PagerAdapter] that will provide
@@ -23,45 +31,55 @@ class TabActivity : AppCompatActivity() {
      */
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tab)
+    var listContacts = mutableListOf<Contact>()
 
-        setSupportActionBar(toolbar)
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    private lateinit var binding: ActivityTabBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
+        super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_tab)
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
-
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.ter_stegen), "Marc André", "ter Stegen", "25", "111111111"))
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.semedo), "Nelson", "Semedo", "23", "222222222"))
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.pique), "Gerard", "Pique", "32", "3333333333"))
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.rakitic), "Ivan", "Rakitic", "31", "4444444444"))
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.busquets), "Sergio", "Busquets", "31", "555555555"))
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.todibo), "Jean-Clair", "Todibo", "31", "6666666666"))
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.coutinho), "Philippe", "Coutinho", "27", "7777777777"))
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.arthur), "Arthur", "Melo", "21", "8888888888"))
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.suarez), "Luis", "Suarez", "32", "9999999999"))
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.messi), "Lionel", "Messi", "31", "1010101010"))
+        listContacts.add(Contact(BitmapFactory.decodeResource(resources, R.drawable.dembele), "Ousmane", "Dembele", "21", "1111111111"))
         // Set up the ViewPager with the sections adapter.
-        container.adapter = mSectionsPagerAdapter
+        binding.container.adapter = mSectionsPagerAdapter
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+
+        binding.container.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                if (position == 0) {
+                    val fragment = binding.container.adapter!!.instantiateItem(binding.container, position) as SearchFragment
+                    fragment.onResume()
+                    binding.container.adapter!!.notifyDataSetChanged()
+                } else if (position == 1) {
+                    val fragment = binding.container.adapter!!.instantiateItem(binding.container, position) as AddFragment
+                    fragment.clearUI()
+                    binding.container.adapter!!.notifyDataSetChanged()
+                }
+            }
+        })
 
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_tab, menu)
-        return true
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> {
+        return fragmentInjector
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-        if (id == R.id.action_settings) {
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
 
     /**
      * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -72,15 +90,35 @@ class TabActivity : AppCompatActivity() {
         override fun getItem(position: Int): Fragment {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            if (position == 0) {
+                return SearchFragment.newInstance()
+            } else if (position == 1) {
+                return AddFragment.newInstance()
+            }
             return Fragment()
-            // return PageHolderFragment.newInstance(position + 1)
         }
 
         override fun getCount(): Int {
-            // Show 3 total pages.
-            return 3
+            // Show 2 total pages.
+            return 2
         }
     }
 
+    override fun onBackPressed() {
+        showMessage("Are you sure you want to exit app?, \n you will have to login again").show()
+    }
 
+    private fun showMessage(message: String): AlertDialog {
+        val alertDialog = AlertDialog.Builder(this).create()
+        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        alertDialog.setMessage(message)
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO") { _, _ ->
+            alertDialog.dismiss()
+        }
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES") { _, _ ->
+            // Dismiss dialog
+            finish()
+        }
+        return alertDialog
+    }
 }

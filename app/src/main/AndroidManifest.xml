@@ -4,6 +4,7 @@
           package="com.test.grainchainapplication">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
             android:name=".AndroidApplication"
@@ -16,10 +17,11 @@
             tools:ignore="GoogleAppIndexingWarning">
         <activity
                 android:name=".modules.TabActivity"
-                android:label="@string/title_activity_tab"
+                android:screenOrientation="portrait"
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".modules.LoginActivity">
+        <activity android:name=".modules.LoginActivity"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
